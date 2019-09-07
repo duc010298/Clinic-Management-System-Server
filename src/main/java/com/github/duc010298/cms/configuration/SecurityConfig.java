@@ -1,14 +1,12 @@
 package com.github.duc010298.cms.configuration;
 
 import com.github.duc010298.cms.filter.JWTAuthenticationFilter;
-import com.github.duc010298.cms.filter.JWTLoginFilter;
-import com.github.duc010298.cms.repository.AppRoleRepository;
-import com.github.duc010298.cms.repository.AppUserRepository;
 import com.github.duc010298.cms.services.TokenAuthenticationService;
 import com.github.duc010298.cms.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,19 +24,14 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private TokenAuthenticationService tokenAuthenticationService;
     private UserDetailsServiceImpl userDetailsService;
-    private AppUserRepository appUserRepository;
-    private AppRoleRepository appRoleRepository;
 
     @Autowired
-    public SpringSecurityConfig(UserDetailsServiceImpl userDetailsService, AppUserRepository appUserRepository,
-                                AppRoleRepository appRoleRepository, TokenAuthenticationService tokenAuthenticationService) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, TokenAuthenticationService tokenAuthenticationService) {
         this.userDetailsService = userDetailsService;
-        this.appUserRepository = appUserRepository;
-        this.appRoleRepository = appRoleRepository;
         this.tokenAuthenticationService = tokenAuthenticationService;
     }
 
@@ -74,13 +67,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager(),
-                        tokenAuthenticationService, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JWTAuthenticationFilter(appUserRepository, appRoleRepository,
-                        tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTAuthenticationFilter(tokenAuthenticationService, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }

@@ -7,8 +7,7 @@ create table if not exists app_user
     id                 serial       not null primary key,
     user_name          varchar(36)  not null unique,
     encrypted_password varchar(128) not null,
-    full_name          varchar(250) not null,
-    token_active_after timestamp    NOT NULL DEFAULT now()
+    full_name          varchar(250) not null
 );
 
 create table if not exists app_role

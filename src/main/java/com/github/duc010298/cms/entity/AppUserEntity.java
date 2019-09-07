@@ -2,7 +2,6 @@ package com.github.duc010298.cms.entity;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -12,7 +11,6 @@ public class AppUserEntity {
     private String userName;
     private String encryptedPassword;
     private String fullName;
-    private Date tokenActiveAfter;
     private Collection<AppRoleEntity> appRoleEntities;
 
     @Id
@@ -54,16 +52,6 @@ public class AppUserEntity {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    @Basic
-    @Column(name = "token_active_after")
-    public Date getTokenActiveAfter() {
-        return this.tokenActiveAfter;
-    }
-
-    public void setTokenActiveAfter(Date tokenActiveAfter) {
-        this.tokenActiveAfter = tokenActiveAfter;
     }
 
     @Override
