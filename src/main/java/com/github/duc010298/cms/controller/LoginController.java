@@ -39,7 +39,6 @@ public class LoginController {
             if (isAuthenticated(authentication)) {
                 AppUserEntity appUserEntity = appUserRepository.findByUserName(userName);
                 UserLoginDTO userLoginDTO = new UserLoginDTO();
-                userLoginDTO.setId(Integer.toString(appUserEntity.getId()));
                 userLoginDTO.setFullName(appUserEntity.getFullName());
                 userLoginDTO.setToken(tokenService.getToken(userName));
                 return ResponseEntity.status(HttpStatus.OK).body(userLoginDTO);
